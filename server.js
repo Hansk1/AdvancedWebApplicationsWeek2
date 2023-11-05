@@ -3,25 +3,10 @@ const app = express();
 const port = 3000;
 
 const path = require("path");
-const fs = require("fs");
 
 app.use(express.json());
 
 let words = [];
-
-fs.readFile("./data/words.json", "utf-8", (err, data) => {
-    if (err) {
-        console.log(err);
-        return;
-    }
-    try {
-        words = JSON.parse(data);
-        console.log("Data loaded!");
-    } catch (err) {
-        console.log("Error parsing JSON");
-        words = [];
-    }
-});
 
 //Static folder:
 app.use(express.static(path.join(__dirname, "public")));
@@ -46,16 +31,9 @@ app.post("/sum", (req, res) => {
 });
 
 app.post("/list", (req, res) => {
-    words.push(req.body);
-
-    fs.writeFile("./data/words.json", JSON.stringify(words), (err) => {
-        if (err) {
-            console.log(err);
-            return;
-        }
-        console.log("Data saved!");
-    });
-    res.json(req.body);
+    console.log(req.body.text);
+    words.push(req.body.text);
+    res.json({ list: words });
 });
 
 app.listen(port, () => console.log("Server listening... [Port: 3000]"));
